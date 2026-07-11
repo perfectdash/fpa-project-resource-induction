@@ -11,7 +11,8 @@ locals {
     "sqladmin.googleapis.com",
     "artifactregistry.googleapis.com",
     "secretmanager.googleapis.com",
-    "storage.googleapis.com"
+    "storage.googleapis.com",
+    "cloudbuild.googleapis.com"
   ]
 }
 
