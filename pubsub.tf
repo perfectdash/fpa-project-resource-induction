@@ -19,3 +19,13 @@ resource "google_pubsub_topic" "budget_breaches_alerts" {
   project    = var.project_id
   depends_on = [google_project_service.enabled_apis]
 }
+
+resource "google_pubsub_subscription" "budget_breaches_alerts_sub" {
+  name    = "budget-breaches-alerts-sub"
+  topic   = google_pubsub_topic.budget_breaches_alerts.name
+  project = var.project_id
+
+  # Retain undelivered messages for 7 days
+  message_retention_duration = "604800s"
+  ack_deadline_seconds       = 30
+}

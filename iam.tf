@@ -28,6 +28,7 @@ locals {
   dataflow_worker_roles = [
     "roles/dataflow.worker",
     "roles/pubsub.subscriber",
+    "roles/pubsub.publisher",
     "roles/bigquery.dataEditor",
     "roles/cloudsql.client",
     "roles/storage.objectAdmin"
@@ -40,3 +41,26 @@ resource "google_project_iam_member" "dataflow_worker_permissions" {
   role     = each.key
   member   = "serviceAccount:${google_service_account.dataflow_worker.email}"
 }
+
+# C. FastAPI Reporting Service Account
+resource "google_service_account" "fastapi_reporting" {
+  account_id   = "fastapi-reporting"
+  display_name = "FastAPI Reporting Service Account"
+  project      = var.project_id
+  depends_on   = [google_project_service.enabled_apis]
+}
+
+locals {
+  reporting_roles = [
+    "roles/bigquery.user",
+    "roles/bigquery.dataViewer"
+  ]
+}
+
+resource "google_project_iam_member" "reporting_permissions" {
+  for_each = toset(local.reporting_roles)
+  project  = var.project_id
+  role     = each.key
+  member   = "serviceAccount:${google_service_account.fastapi_reporting.email}"
+}
+
